@@ -29,7 +29,7 @@
 - [x] Landing page with Katas and Applications (Coming Soon) cards
 - [ ] Kata browser / sidebar navigation (Phases 0–10)
 - [x] SQL query editor component (CodeMirror 6 + PostgreSQL dialect)
-- [x] Result table component (with row limit display, NULL styling)
+- [x] Result table component (with row limit display, NULL styling, client-side pagination)
 - [ ] Execution plan viewer component
 - [x] Error display with educational context
 - [x] Dataset reset button

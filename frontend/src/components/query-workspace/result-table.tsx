@@ -1,4 +1,4 @@
-import { For, Show } from "solid-js";
+import { For, Show, createSignal, createMemo } from "solid-js";
 import type { QueryResponse } from "~/lib/types";
 
 interface ResultTableProps {
@@ -6,7 +6,48 @@ interface ResultTableProps {
 	loading: boolean;
 }
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+
 export default function ResultTable(props: ResultTableProps) {
+	const [page, setPage] = createSignal(0);
+	const [pageSize, setPageSize] = createSignal<number>(25);
+
+	const allRows = createMemo(() => {
+		if (props.result?.success) {
+			return (props.result as { rows: Record<string, unknown>[] }).rows;
+		}
+		return [];
+	});
+
+	const totalRows = createMemo(() => allRows().length);
+	const totalPages = createMemo(() => Math.max(1, Math.ceil(totalRows() / pageSize())));
+
+	const pagedRows = createMemo(() => {
+		const start = page() * pageSize();
+		return allRows().slice(start, start + pageSize());
+	});
+
+	const rangeStart = createMemo(() => (totalRows() === 0 ? 0 : page() * pageSize() + 1));
+	const rangeEnd = createMemo(() => Math.min((page() + 1) * pageSize(), totalRows()));
+
+	// Reset to first page when result changes
+	createMemo(() => {
+		if (props.result) setPage(0);
+	});
+
+	function goFirst() {
+		setPage(0);
+	}
+	function goPrev() {
+		setPage((p) => Math.max(0, p - 1));
+	}
+	function goNext() {
+		setPage((p) => Math.min(totalPages() - 1, p + 1));
+	}
+	function goLast() {
+		setPage(totalPages() - 1);
+	}
+
 	return (
 		<div class="flex flex-col h-full overflow-hidden">
 			{/* Header */}
@@ -153,7 +194,7 @@ export default function ResultTable(props: ResultTableProps) {
 							</tr>
 						</thead>
 						<tbody>
-							<For each={(props.result as { rows: Record<string, unknown>[] }).rows}>
+							<For each={pagedRows()}>
 								{(row) => (
 									<tr
 										class="transition-colors duration-100"
@@ -248,6 +289,125 @@ export default function ResultTable(props: ResultTableProps) {
 					</div>
 				</Show>
 			</div>
+
+			{/* Pagination footer */}
+			<Show when={!props.loading && props.result?.success && totalRows() > 0}>
+				<div
+					class="flex items-center justify-between px-4 py-2 border-t"
+					style={{
+						"border-color": "var(--border)",
+						"background-color": "var(--bg-secondary)",
+					}}
+				>
+					{/* Rows per page */}
+					<div class="flex items-center gap-2">
+						<span class="text-xs" style={{ color: "var(--text-muted)" }}>
+							Rows per page
+						</span>
+						<select
+							class="text-xs rounded px-1.5 py-1 border outline-none cursor-pointer"
+							style={{
+								"border-color": "var(--border)",
+								"background-color": "var(--bg-primary)",
+								color: "var(--text-primary)",
+							}}
+							value={pageSize()}
+							onChange={(e) => {
+								setPageSize(Number(e.currentTarget.value));
+								setPage(0);
+							}}
+						>
+							<For each={[...PAGE_SIZE_OPTIONS]}>
+								{(size) => <option value={size}>{size}</option>}
+							</For>
+						</select>
+					</div>
+
+					{/* Range indicator */}
+					<span class="text-xs" style={{ color: "var(--text-muted)" }}>
+						{rangeStart()}–{rangeEnd()} of {totalRows()}
+					</span>
+
+					{/* Navigation */}
+					<div class="flex items-center gap-1">
+						<PaginationButton
+							onClick={goFirst}
+							disabled={page() === 0}
+							title="First page"
+						>
+							<path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+						</PaginationButton>
+						<PaginationButton
+							onClick={goPrev}
+							disabled={page() === 0}
+							title="Previous page"
+						>
+							<path d="M15 19l-7-7 7-7" />
+						</PaginationButton>
+						<span
+							class="text-xs px-2 tabular-nums"
+							style={{ color: "var(--text-secondary)" }}
+						>
+							{page() + 1} / {totalPages()}
+						</span>
+						<PaginationButton
+							onClick={goNext}
+							disabled={page() >= totalPages() - 1}
+							title="Next page"
+						>
+							<path d="M9 5l7 7-7 7" />
+						</PaginationButton>
+						<PaginationButton
+							onClick={goLast}
+							disabled={page() >= totalPages() - 1}
+							title="Last page"
+						>
+							<path d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+						</PaginationButton>
+					</div>
+				</div>
+			</Show>
 		</div>
+	);
+}
+
+function PaginationButton(props: {
+	onClick: () => void;
+	disabled: boolean;
+	title: string;
+	children: unknown;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={props.onClick}
+			disabled={props.disabled}
+			title={props.title}
+			class="p-1 rounded transition-colors"
+			style={{
+				color: props.disabled ? "var(--text-muted)" : "var(--text-secondary)",
+				opacity: props.disabled ? 0.4 : 1,
+				cursor: props.disabled ? "default" : "pointer",
+			}}
+			onMouseEnter={(e) => {
+				if (!props.disabled) e.currentTarget.style.backgroundColor = "var(--bg-tertiary)";
+			}}
+			onMouseLeave={(e) => {
+				e.currentTarget.style.backgroundColor = "transparent";
+			}}
+		>
+			<svg
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				{props.children}
+			</svg>
+		</button>
 	);
 }
