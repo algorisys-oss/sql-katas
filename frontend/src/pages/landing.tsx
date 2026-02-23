@@ -40,7 +40,7 @@ export default function Landing() {
 					title="Katas"
 					description="A structured learning sequence from relational thinking to advanced analytics. Each kata includes visual reasoning, live SQL editors, and execution plan analysis."
 					status="active"
-					href="/lab"
+					href="/katas"
 					icon="🥋"
 				/>
 				<TrackCard

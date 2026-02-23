@@ -18,13 +18,30 @@ const BLOCKED_KEYWORDS = [
 	"ROLLBACK",
 ];
 
+function stripLeadingComments(sql: string): string {
+	let s = sql;
+	while (true) {
+		s = s.trimStart();
+		if (s.startsWith("--")) {
+			const newline = s.indexOf("\n");
+			s = newline === -1 ? "" : s.slice(newline + 1);
+		} else if (s.startsWith("/*")) {
+			const end = s.indexOf("*/");
+			s = end === -1 ? "" : s.slice(end + 2);
+		} else {
+			break;
+		}
+	}
+	return s;
+}
+
 export function validateQuery(query: string): { valid: boolean; error?: string } {
 	const trimmed = query.trim();
 	if (!trimmed) {
 		return { valid: false, error: "Query cannot be empty." };
 	}
 
-	const normalized = trimmed.toUpperCase();
+	const normalized = stripLeadingComments(trimmed).toUpperCase();
 
 	if (
 		!normalized.startsWith("SELECT") &&

@@ -23,80 +23,86 @@
 - [x] POST `/api/explain` — return query execution plan (changed from GET — SQL in body)
 - [x] POST `/api/reset` — reset dataset to seed state
 - [x] Error responses with educational messages
+- [x] GET `/api/katas` — list all katas grouped by phase
+- [x] GET `/api/katas/:id` — get full kata with markdown content
+- [x] Kata content loader (auto-discovers `katas/phase-*/*.md` files)
 
 ## Frontend — Core UI
 
 - [x] Landing page with Katas and Applications (Coming Soon) cards
-- [ ] Kata browser / sidebar navigation (Phases 0–10)
+- [x] Kata browser / sidebar navigation (Phases 0–10)
 - [x] SQL query editor component (CodeMirror 6 + PostgreSQL dialect)
 - [x] Result table component (with row limit display, NULL styling, client-side pagination)
 - [ ] Execution plan viewer component
 - [x] Error display with educational context
 - [x] Dataset reset button
+- [x] Markdown content renderer (code block placeholders, CSS classes, tables)
+- [x] Kata page with split layout (markdown left, SQL editor + results right)
+- [x] Resizable and maximizable code panel on kata page
 
 ## Kata Content — Phase 0: Relational Thinking
 
-- [ ] 0A — Tables & Structure (data types, schemas)
-- [ ] 0B — Keys & Constraints (PK, FK, UNIQUE, NOT NULL, CHECK)
-- [ ] 0C — Relationships (1:1, 1:N, M:N, junction tables, ER diagrams)
-- [ ] 0D — Normalization & Denormalization (1NF, 2NF, 3NF, tradeoffs)
-- [ ] 0E — NULL & Three-Valued Logic
+- [x] 0A — Tables & Structure (data types, schemas)
+- [x] 0B — Keys & Constraints (PK, FK, UNIQUE, NOT NULL, CHECK)
+- [x] 0C — Relationships (1:1, 1:N, M:N, junction tables, ER diagrams)
+- [x] 0D — Normalization & Denormalization (1NF, 2NF, 3NF, tradeoffs)
+- [x] 0E — NULL & Three-Valued Logic
 
 ## Kata Content — Phase 1: Basic SELECT
 
-- [ ] SELECT, FROM, WHERE
-- [ ] DISTINCT
-- [ ] ORDER BY
-- [ ] LIMIT / OFFSET
+- [x] SELECT, FROM, WHERE
+- [x] DISTINCT
+- [x] ORDER BY
+- [x] LIMIT / OFFSET
 
 ## Kata Content — Phase 2: Filtering & Conditions
 
-- [ ] Comparison operators, AND/OR/NOT
-- [ ] IN, BETWEEN, LIKE
-- [ ] NULL handling (IS NULL, COALESCE, NULLIF)
-- [ ] CASE expressions
-- [ ] Type casting
-- [ ] String functions
-- [ ] Date/time functions
+- [x] Comparison operators, AND/OR/NOT
+- [x] IN, BETWEEN, LIKE
+- [x] NULL handling (IS NULL, COALESCE, NULLIF)
+- [x] CASE expressions
+- [x] Type casting
+- [x] String functions
+- [x] Date/time functions
 
 ## Kata Content — Phase 3: Aggregation & GROUP BY
 
-- [ ] COUNT, SUM, AVG, MIN, MAX
-- [ ] GROUP BY
-- [ ] HAVING
-- [ ] Grouping vs filtering logic
+- [x] COUNT, SUM, AVG, MIN, MAX
+- [x] GROUP BY
+- [x] HAVING
+- [x] Grouping vs filtering logic
 
 ## Kata Content — Phase 4: Joins & Relationships
 
-- [ ] INNER JOIN
-- [ ] LEFT JOIN
-- [ ] RIGHT JOIN
-- [ ] FULL JOIN
-- [ ] Join conditions vs filters
-- [ ] Join explosion and duplication
+- [x] INNER JOIN
+- [x] LEFT JOIN
+- [x] RIGHT JOIN
+- [x] FULL JOIN
+- [x] Join conditions vs filters
+- [x] Join explosion and duplication
 
 ## Kata Content — Phase 5: Subqueries & CTEs
 
-- [ ] Scalar subqueries
-- [ ] Correlated subqueries
-- [ ] WITH (CTEs)
-- [ ] Recursive CTEs (hierarchical data)
-- [ ] Subqueries vs CTEs vs derived tables
+- [x] Scalar subqueries
+- [x] Correlated subqueries
+- [x] WITH (CTEs)
+- [x] Recursive CTEs (hierarchical data)
+- [x] Subqueries vs CTEs vs derived tables
 
 ## Kata Content — Phase 6: Advanced Filtering
 
-- [ ] EXISTS vs IN
-- [ ] Anti-joins
-- [ ] UNION, INTERSECT, EXCEPT
-- [ ] Deduplication strategies
+- [x] EXISTS vs IN
+- [x] Anti-joins
+- [x] UNION, INTERSECT, EXCEPT
+- [x] Deduplication strategies
 
 ## Kata Content — Phase 7: Window Functions
 
-- [ ] OVER() clause
-- [ ] PARTITION BY
-- [ ] ROW_NUMBER, RANK, DENSE_RANK
-- [ ] LAG, LEAD
-- [ ] Window frames
+- [x] OVER() clause
+- [x] PARTITION BY
+- [x] ROW_NUMBER, RANK, DENSE_RANK
+- [x] LAG, LEAD
+- [x] Window frames
 
 ## Kata Content — Phase 8: Advanced Analytics
 

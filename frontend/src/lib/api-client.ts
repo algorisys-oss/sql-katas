@@ -1,4 +1,4 @@
-import type { QueryResponse, ExplainResponse, ResetResponse } from "./types";
+import type { QueryResponse, ExplainResponse, ResetResponse, KataListResponse, Kata } from "./types";
 
 const API_BASE = "/api";
 
@@ -56,4 +56,12 @@ export async function resetDataset(): Promise<ResetResponse> {
 
 export async function healthCheck(): Promise<{ status: string; database: string }> {
 	return safeFetch(`${API_BASE}/health`);
+}
+
+export async function fetchKataList(): Promise<KataListResponse> {
+	return safeFetch<KataListResponse>(`${API_BASE}/katas`);
+}
+
+export async function fetchKata(id: string): Promise<Kata> {
+	return safeFetch<Kata>(`${API_BASE}/katas/${id}`);
 }

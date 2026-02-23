@@ -1,0 +1,17 @@
+{
+	"name": "sql-katas",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "bun run dev:backend & bun run dev:frontend",
+		"dev:backend": "cd backend && bun --watch src/index.ts",
+		"dev:frontend": "cd frontend && bunx vite",
+		"seed": "cd backend && bun src/seed-runner.ts",
+		"test": "bun run test:backend && bun run test:frontend",
+		"test:backend": "cd backend && bun test",
+		"test:frontend": "cd frontend && bunx vitest run",
+		"build": "cd frontend && bunx vite build",
+		"lint": "bunx biome check .",
+		"lint:fix": "bunx biome check --write ."
+	}
+}

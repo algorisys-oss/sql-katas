@@ -7,15 +7,20 @@ interface SqlEditorProps {
 }
 
 export default function SqlEditor(props: SqlEditorProps) {
-	const [code, setCode] = createSignal(
-		props.initialCode || "SELECT * FROM customers LIMIT 10;",
-	);
+	const defaultCode = () => props.initialCode || "SELECT * FROM customers LIMIT 10;";
+	const [code, setCode] = createSignal(defaultCode());
 
-	const { ref } = createCodeMirror({
+	const { ref, setCode: setEditorCode } = createCodeMirror({
 		code,
 		onCodeChange: setCode,
 		onCtrlEnter: () => props.onExecute(code()),
 	});
+
+	const handleRevert = () => {
+		const starter = defaultCode();
+		setCode(starter);
+		setEditorCode(starter);
+	};
 
 	return (
 		<div class="flex flex-col h-full">
@@ -43,29 +48,55 @@ export default function SqlEditor(props: SqlEditorProps) {
 						SQL Editor
 					</span>
 				</div>
-				<button
-					onClick={() => props.onExecute(code())}
-					class="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-md text-white transition-all duration-150 hover:shadow-md active:scale-95"
-					style={{ "background-color": "var(--accent)" }}
-				>
-					<svg
-						width="12"
-						height="12"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-					>
-						<polygon points="5 3 19 12 5 21 5 3" />
-					</svg>
-					Run
-					<kbd
-						class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-mono opacity-70"
+				<div class="flex items-center gap-2">
+					<button
+						onClick={handleRevert}
+						class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150 active:scale-95"
 						style={{
-							"background-color": "rgba(255,255,255,0.2)",
+							color: "var(--text-secondary)",
+							"background-color": "var(--bg-tertiary)",
 						}}
+						title="Revert to starter code"
 					>
-						Ctrl+Enter
-					</kbd>
-				</button>
+						<svg
+							width="12"
+							height="12"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polyline points="1 4 1 10 7 10" />
+							<path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+						</svg>
+						Revert
+					</button>
+					<button
+						onClick={() => props.onExecute(code())}
+						class="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-md text-white transition-all duration-150 hover:shadow-md active:scale-95"
+						style={{ "background-color": "var(--accent)" }}
+					>
+						<svg
+							width="12"
+							height="12"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+						>
+							<polygon points="5 3 19 12 5 21 5 3" />
+						</svg>
+						Run
+						<kbd
+							class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-mono opacity-70"
+							style={{
+								"background-color": "rgba(255,255,255,0.2)",
+							}}
+						>
+							Ctrl+Enter
+						</kbd>
+					</button>
+				</div>
 			</div>
 			<div ref={ref} class="flex-1 overflow-auto" />
 		</div>
