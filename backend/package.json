@@ -1,0 +1,19 @@
+{
+	"name": "sql-katas-backend",
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "bun --watch src/index.ts",
+		"start": "bun src/index.ts",
+		"test": "bun test",
+		"seed": "bun src/seed-runner.ts"
+	},
+	"dependencies": {
+		"elysia": "^1.4.25",
+		"@elysiajs/cors": "^1.4.1",
+		"postgres": "^3.4.8"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	}
+}
