@@ -1,6 +1,6 @@
 ---
 id: reporting-queries
-phase: 10
+phase: 11
 phase_title: Real-World SQL Challenges
 sequence: 3
 title: Reporting Queries

@@ -1,6 +1,6 @@
 ---
 id: business-analytics
-phase: 10
+phase: 11
 phase_title: Real-World SQL Challenges
 sequence: 2
 title: Business Analytics Queries

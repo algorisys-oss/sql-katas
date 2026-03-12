@@ -1,6 +1,6 @@
 ---
 id: data-cleanup-and-transformation
-phase: 10
+phase: 11
 phase_title: Real-World SQL Challenges
 sequence: 4
 title: Data Cleanup & Transformation

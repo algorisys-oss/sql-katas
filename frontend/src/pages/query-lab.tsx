@@ -1,12 +1,13 @@
 import { createSignal, Show } from "solid-js";
 import SqlEditor from "../components/query-workspace/sql-editor";
-import ResultTable from "../components/query-workspace/result-table";
+import ResultTabs from "../components/query-workspace/result-tabs";
 import ThemeToggle from "../components/layout/theme-toggle";
-import { executeQuery, resetDataset } from "../lib/api-client";
-import type { QueryResponse } from "../lib/types";
+import { executeQuery, fetchQueryDiagram, resetDataset } from "../lib/api-client";
+import type { QueryResponse, QueryDiagramResponse } from "../lib/types";
 
 export default function QueryLab() {
 	const [result, setResult] = createSignal<QueryResponse | null>(null);
+	const [diagram, setDiagram] = createSignal<QueryDiagramResponse | null>(null);
 	const [loading, setLoading] = createSignal(false);
 	const [resetting, setResetting] = createSignal(false);
 	const [resetMessage, setResetMessage] = createSignal<string | null>(null);
@@ -15,10 +16,15 @@ export default function QueryLab() {
 		setLoading(true);
 		setResetMessage(null);
 		try {
-			const res = await executeQuery(query);
+			const [res, diag] = await Promise.all([
+				executeQuery(query),
+				fetchQueryDiagram(query),
+			]);
 			setResult(res);
+			setDiagram(diag);
 		} catch (error) {
 			setResult({ success: false, error: String(error), rows: [], columns: [] });
+			setDiagram(null);
 		} finally {
 			setLoading(false);
 		}
@@ -32,6 +38,7 @@ export default function QueryLab() {
 			if (res.success) {
 				setResetMessage("Dataset reset successfully.");
 				setResult(null);
+				setDiagram(null);
 			} else {
 				setResetMessage(`Reset failed: ${res.error}`);
 			}
@@ -118,7 +125,11 @@ export default function QueryLab() {
 
 			{/* Results (bottom half) */}
 			<div class="flex-1 min-h-0">
-				<ResultTable result={result()} loading={loading()} />
+				<ResultTabs
+					result={result()}
+					diagram={diagram()}
+					loading={loading()}
+				/>
 			</div>
 		</div>
 	);

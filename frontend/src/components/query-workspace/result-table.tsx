@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createMemo } from "solid-js";
+import { For, Show, createSignal, createMemo, type JSX } from "solid-js";
 import type { QueryResponse } from "~/lib/types";
 
 interface ResultTableProps {
@@ -375,7 +375,7 @@ function PaginationButton(props: {
 	onClick: () => void;
 	disabled: boolean;
 	title: string;
-	children: unknown;
+	children: JSX.Element;
 }) {
 	return (
 		<button

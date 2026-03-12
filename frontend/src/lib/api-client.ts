@@ -1,4 +1,4 @@
-import type { QueryResponse, ExplainResponse, ResetResponse, KataListResponse, Kata } from "./types";
+import type { QueryResponse, ExplainResponse, ResetResponse, KataListResponse, Kata, QueryDiagramResponse } from "./types";
 
 const API_BASE = "/api";
 
@@ -43,6 +43,18 @@ export async function explainQuery(query: string): Promise<ExplainResponse> {
 		});
 	} catch (error) {
 		return { success: false, error: (error as Error).message, plan: null };
+	}
+}
+
+export async function fetchQueryDiagram(query: string): Promise<QueryDiagramResponse> {
+	try {
+		return await safeFetch<QueryDiagramResponse>(`${API_BASE}/query-diagram`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ query }),
+		});
+	} catch (error) {
+		return { success: false, error: (error as Error).message, steps: [] };
 	}
 }
 

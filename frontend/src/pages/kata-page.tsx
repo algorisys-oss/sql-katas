@@ -1,10 +1,10 @@
 import { createResource, createSignal, createMemo, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { fetchKata, executeQuery } from "~/lib/api-client";
-import type { QueryResponse } from "~/lib/types";
+import { fetchKata, executeQuery, fetchQueryDiagram } from "~/lib/api-client";
+import type { QueryResponse, QueryDiagramResponse } from "~/lib/types";
 import MarkdownContent from "~/components/markdown-content/markdown-content";
 import SqlEditor from "~/components/query-workspace/sql-editor";
-import ResultTable from "~/components/query-workspace/result-table";
+import ResultTabs from "~/components/query-workspace/result-tabs";
 
 const MIN_PANEL_PCT = 20;
 const DEFAULT_CODE_PCT = 40;
@@ -18,6 +18,7 @@ export default function KataPage() {
 	);
 
 	const [result, setResult] = createSignal<QueryResponse | null>(null);
+	const [diagram, setDiagram] = createSignal<QueryDiagramResponse | null>(null);
 	const [loading, setLoading] = createSignal(false);
 	const [codePanelPct, setCodePanelPct] = createSignal(DEFAULT_CODE_PCT);
 	const [maximized, setMaximized] = createSignal(false);
@@ -28,10 +29,15 @@ export default function KataPage() {
 	const handleExecute = async (query: string) => {
 		setLoading(true);
 		try {
-			const res = await executeQuery(query);
+			const [res, diag] = await Promise.all([
+				executeQuery(query),
+				fetchQueryDiagram(query),
+			]);
 			setResult(res);
+			setDiagram(diag);
 		} catch (error) {
 			setResult({ success: false, error: String(error), rows: [], columns: [] });
+			setDiagram(null);
 		} finally {
 			setLoading(false);
 		}
@@ -68,6 +74,7 @@ export default function KataPage() {
 	createMemo(() => {
 		const _id = params.kataId;
 		setResult(null);
+		setDiagram(null);
 		setLoading(false);
 	});
 
@@ -250,7 +257,11 @@ export default function KataPage() {
 								/>
 							</div>
 							<div class="flex-1 min-h-0">
-								<ResultTable result={result()} loading={loading()} />
+								<ResultTabs
+									result={result()}
+									diagram={diagram()}
+									loading={loading()}
+								/>
 							</div>
 						</div>
 					</>

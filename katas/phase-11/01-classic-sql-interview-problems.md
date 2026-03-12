@@ -1,6 +1,6 @@
 ---
 id: classic-sql-interview-problems
-phase: 10
+phase: 11
 phase_title: Real-World SQL Challenges
 sequence: 1
 title: Classic SQL Interview Problems

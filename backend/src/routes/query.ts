@@ -1,6 +1,8 @@
 import { Elysia, t } from "elysia";
 import { sql, learnerSql } from "../db";
 import { validateQuery, wrapWithLimit } from "../lib/sandbox";
+import { parseLogicalSteps } from "../lib/sql-step-parser";
+import { mapExplainToSteps } from "../lib/explain-mapper";
 
 const MAX_ROWS = 1000;
 
@@ -47,6 +49,32 @@ export const queryRoutes = new Elysia({ prefix: "/api" })
 				const message = error instanceof Error ? error.message : String(error);
 				return { success: false, error: message, plan: null };
 			}
+		},
+		{ body: t.Object({ query: t.String() }) },
+	)
+	.post(
+		"/query-diagram",
+		async ({ body }) => {
+			const validation = validateQuery(body.query);
+			if (!validation.valid) {
+				return { success: false, error: validation.error, steps: [] };
+			}
+
+			// Parse logical steps from SQL text
+			let steps = parseLogicalSteps(body.query);
+
+			// Try to enrich with EXPLAIN row counts
+			try {
+				const result = await learnerSql.unsafe(
+					`EXPLAIN (FORMAT JSON) ${body.query}`,
+				);
+				const plan = result[0]["QUERY PLAN"];
+				steps = mapExplainToSteps(plan, steps);
+			} catch {
+				// EXPLAIN failed — return steps without row counts
+			}
+
+			return { success: true, steps };
 		},
 		{ body: t.Object({ query: t.String() }) },
 	)

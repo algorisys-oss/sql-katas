@@ -43,6 +43,30 @@ export interface KataListResponse {
 	phases: PhaseGroup[];
 }
 
+export interface DiagramStep {
+	type:
+		| "CTE"
+		| "FROM"
+		| "JOIN"
+		| "WHERE"
+		| "GROUP_BY"
+		| "HAVING"
+		| "SELECT"
+		| "DISTINCT"
+		| "ORDER_BY"
+		| "LIMIT";
+	label: string;
+	description: string;
+	estimatedRows?: number;
+	actualRows?: number;
+}
+
+export interface QueryDiagramResponse {
+	success: boolean;
+	error?: string;
+	steps: DiagramStep[];
+}
+
 export interface Kata {
 	id: string;
 	phase: number;
